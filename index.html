@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franci & Ben — Budget</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0e1117;
+  --ink-2:#3d4452;
+  --ink-3:#8a91a0;
+  --ink-4:#c4c8d2;
+  --surface:#ffffff;
+  --surface-2:#f6f7f9;
+  --surface-3:#eef0f4;
+  --border:#e4e7ed;
+  --teal:#0f6e56;
+  --teal-mid:#1d9e75;
+  --teal-light:#e1f5ee;
+  --teal-pale:#f2faf7;
+  --amber:#b87a14;
+  --amber-light:#fef3dc;
+  --red:#b83232;
+  --red-light:#fdeaea;
+  --franci:#6c4fd4;
+  --franci-light:#f0ecfc;
+  --ben:#d4874f;
+  --ben-light:#fdf2ea;
+  --radius:12px;
+  --radius-sm:8px;
+  --radius-lg:20px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.10);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+  --transition:all .18s cubic-bezier(.4,0,.2,1);
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{
+  font-family:var(--font-body);
+  background:var(--surface-2);
+  color:var(--ink);
+  min-height:100vh;
+  line-height:1.5;
+}
+
+/* ── Layout ── */
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── Top Nav ── */
+nav{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(12px);
+}
+.nav-inner{
+  max-width:1100px;margin:0 auto;
+  padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;
+}
+.nav-brand{
+  font-family:var(--font-display);
+  font-size:1.2rem;color:var(--ink);
+  display:flex;align-items:center;gap:8px;
+}
+.nav-brand span{color:var(--teal-mid)}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{
+  padding:6px 16px;border-radius:100px;
+  font-size:.85rem;font-weight:500;
+  border:none;background:none;cursor:pointer;
+  color:var(--ink-3);transition:var(--transition);
+  font-family:var(--font-body);
+}
+.nav-tab:hover{background:var(--surface-2);color:var(--ink)}
+.nav-tab.active{background:var(--ink);color:#fff}
+.nav-tab.franci-tab.active{background:var(--franci);color:#fff}
+.nav-tab.ben-tab.active{background:var(--ben);color:#fff}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.btn-icon{
+  width:36px;height:36px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-2);transition:var(--transition);font-size:1rem;
+}
+.btn-icon:hover{background:var(--surface-3);border-color:var(--ink-4)}
+
+/* ── Main Content ── */
+main{flex:1;max-width:1100px;margin:0 auto;width:100%;padding:32px 24px}
+
+/* ── Month selector ── */
+.month-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:28px;
+}
+.month-label{font-family:var(--font-display);font-size:1.6rem;color:var(--ink)}
+.month-nav{display:flex;gap:6px;align-items:center}
+.month-btn{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-2);transition:var(--transition);font-size:.9rem;
+}
+.month-btn:hover{background:var(--surface-3)}
+
+/* ── Summary Cards ── */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;margin-bottom:28px;
+}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px 24px;
+  box-shadow:var(--shadow);transition:var(--transition);
+}
+.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.card-label{font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.card-value{font-family:var(--font-display);font-size:1.8rem;color:var(--ink);line-height:1}
+.card-sub{font-size:.8rem;color:var(--ink-3);margin-top:6px}
+.card-value.positive{color:var(--teal-mid)}
+.card-value.negative{color:var(--red)}
+.card-value.franci{color:var(--franci)}
+.card-value.ben{color:var(--ben)}
+.card.accent-teal{border-left:3px solid var(--teal-mid)}
+.card.accent-franci{border-left:3px solid var(--franci)}
+.card.accent-ben{border-left:3px solid var(--ben)}
+
+/* ── Two-col layout ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+
+/* ── Section ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+.section-header{
+  padding:18px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.section-title{font-weight:600;font-size:.95rem;color:var(--ink)}
+.section-body{padding:0}
+
+/* ── Category rows ── */
+.cat-row{
+  display:grid;
+  grid-template-columns:1fr 90px 90px 70px;
+  gap:8px;align-items:center;
+  padding:12px 24px;border-bottom:1px solid var(--border);
+  transition:var(--transition);
+}
+.cat-row:last-child{border-bottom:none}
+.cat-row:hover{background:var(--surface-2)}
+.cat-name{font-size:.875rem;font-weight:500;color:var(--ink)}
+.cat-icon{font-size:1rem;margin-right:8px}
+.cat-amount{font-size:.875rem;text-align:right;color:var(--ink-2)}
+.cat-budget{font-size:.75rem;color:var(--ink-3);text-align:right}
+.progress-bar{height:4px;background:var(--surface-3);border-radius:100px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;border-radius:100px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.progress-fill.ok{background:var(--teal-mid)}
+.progress-fill.warn{background:var(--amber)}
+.progress-fill.over{background:var(--red)}
+.cat-pct{font-size:.72rem;color:var(--ink-3);text-align:right}
+
+/* ── Expense Table ── */
+.expense-table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+thead tr{background:var(--surface-2);border-bottom:1px solid var(--border)}
+thead th{
+  padding:11px 16px;text-align:left;
+  font-size:.72rem;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink-3);
+  white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--border);transition:var(--transition)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+td{padding:12px 16px;color:var(--ink-2);vertical-align:middle}
+td.amount{font-weight:500;color:var(--ink);text-align:right;white-space:nowrap}
+td.date-cell{color:var(--ink-3);white-space:nowrap;font-size:.8rem}
+td.cat-cell{white-space:nowrap}
+.cat-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:100px;
+  font-size:.75rem;font-weight:500;
+  background:var(--surface-3);color:var(--ink-2);
+}
+.split-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.78rem;color:var(--ink-3);
+}
+.split-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.split-dot.franci{background:var(--franci)}
+.split-dot.ben{background:var(--ben)}
+.del-btn{
+  width:28px;height:28px;border-radius:var(--radius-sm);
+  border:none;background:none;cursor:pointer;
+  color:var(--ink-4);transition:var(--transition);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;
+}
+.del-btn:hover{background:var(--red-light);color:var(--red)}
+.empty-state{
+  padding:48px 24px;text-align:center;color:var(--ink-3);
+}
+.empty-state .empty-icon{font-size:2rem;margin-bottom:12px;opacity:.4}
+.empty-state p{font-size:.875rem}
+
+/* ── Add Expense Button ── */
+.add-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:100px;
+  border:none;cursor:pointer;font-family:var(--font-body);
+  font-size:.85rem;font-weight:500;
+  background:var(--teal-mid);color:#fff;
+  transition:var(--transition);box-shadow:0 2px 8px rgba(29,158,117,.25);
+}
+.add-btn:hover{background:var(--teal);box-shadow:0 4px 12px rgba(29,158,117,.35);transform:translateY(-1px)}
+.add-btn svg{width:16px;height:16px}
+
+/* ── Modal ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(14,17,23,.5);
+  backdrop-filter:blur(4px);z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+  padding:20px;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);width:100%;max-width:480px;
+  transform:translateY(20px) scale(.97);
+  transition:transform .2s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-header{
+  padding:22px 24px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.modal-title{font-family:var(--font-display);font-size:1.25rem}
+.modal-close{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:none;cursor:pointer;
+  font-size:1rem;color:var(--ink-3);transition:var(--transition);
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{background:var(--surface-3);color:var(--ink)}
+.modal-body{padding:24px}
+.modal-footer{
+  padding:16px 24px;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:10px;
+}
+
+/* ── Form ── */
+.form-group{margin-bottom:18px}
+.form-label{
+  display:block;font-size:.8rem;font-weight:600;
+  color:var(--ink-2);margin-bottom:6px;letter-spacing:.02em;
+}
+.form-input,.form-select{
+  width:100%;padding:10px 14px;
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-family:var(--font-body);font-size:.9rem;color:var(--ink);
+  background:var(--surface);transition:var(--transition);
+  outline:none;
+}
+.form-input:focus,.form-select:focus{border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(29,158,117,.12)}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a91a0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* ── Split slider ── */
+.split-container{margin-bottom:18px}
+.split-labels{display:flex;justify-content:space-between;margin-bottom:8px}
+.split-label-item{font-size:.8rem;font-weight:600}
+.split-label-item.franci-color{color:var(--franci)}
+.split-label-item.ben-color{color:var(--ben)}
+.split-track{position:relative;height:6px;background:var(--ben-light);border-radius:100px;overflow:hidden;cursor:pointer}
+.split-fill{height:100%;background:var(--franci-light);border-radius:100px 0 0 100px;transition:width .1s}
+.split-handle{
+  position:absolute;top:50%;transform:translate(-50%,-50%);
+  width:20px;height:20px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--border);
+  box-shadow:0 2px 6px rgba(0,0,0,.15);cursor:grab;transition:border-color .15s;
+  z-index:2;
+}
+.split-handle:active{cursor:grabbing;border-color:var(--teal-mid)}
+.split-values{display:flex;justify-content:space-between;margin-top:8px}
+.split-val{
+  font-size:.85rem;font-weight:500;padding:4px 12px;border-radius:100px;
+}
+.split-val.franci-val{background:var(--franci-light);color:var(--franci)}
+.split-val.ben-val{background:var(--ben-light);color:var(--ben)}
+.split-reset{
+  font-size:.75rem;color:var(--ink-3);border:none;background:none;
+  cursor:pointer;text-decoration:underline;margin-top:4px;
+  font-family:var(--font-body);display:block;text-align:center;width:100%;
+}
+.split-reset:hover{color:var(--ink-2)}
+
+/* ── Buttons ── */
+.btn{
+  padding:10px 22px;border-radius:100px;
+  border:none;cursor:pointer;font-family:var(--font-body);
+  font-size:.875rem;font-weight:500;transition:var(--transition);
+}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--ink-2)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-primary{background:var(--teal-mid);color:#fff;box-shadow:0 2px 8px rgba(29,158,117,.25)}
+.btn-primary:hover{background:var(--teal);transform:translateY(-1px)}
+.btn-primary:disabled{background:var(--ink-4);box-shadow:none;cursor:not-allowed;transform:none}
+
+/* ── Settings Panel ── */
+.settings-overlay{
+  position:fixed;inset:0;background:rgba(14,17,23,.5);
+  backdrop-filter:blur(4px);z-index:200;
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.settings-overlay.open{opacity:1;pointer-events:all}
+.settings-panel{
+  background:var(--surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+  padding:28px 28px 40px;
+  transform:translateY(40px);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.settings-overlay.open .settings-panel{transform:translateY(0)}
+.settings-title{font-family:var(--font-display);font-size:1.4rem;margin-bottom:24px}
+.settings-section{margin-bottom:28px}
+.settings-section-title{
+  font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.person-income-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;
+}
+.budget-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.budget-item{display:flex;align-items:center;gap:10px}
+.budget-item-icon{font-size:1.1rem;flex-shrink:0}
+.budget-item-label{font-size:.8rem;color:var(--ink-2);flex:1}
+.budget-item-input{
+  width:100px;padding:6px 10px;
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-family:var(--font-body);font-size:.85rem;color:var(--ink);
+  text-align:right;outline:none;background:var(--surface);
+}
+.budget-item-input:focus{border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+.settings-save{
+  width:100%;padding:12px;border-radius:var(--radius);
+  border:none;cursor:pointer;font-family:var(--font-body);
+  font-weight:600;font-size:.9rem;background:var(--teal-mid);color:#fff;
+  transition:var(--transition);margin-top:8px;
+}
+.settings-save:hover{background:var(--teal)}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;padding:11px 20px;border-radius:100px;
+  font-size:.85rem;font-weight:500;opacity:0;transition:all .25s ease;
+  z-index:300;white-space:nowrap;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── Loading ── */
+.loading{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:300px;gap:16px;color:var(--ink-3);
+}
+.spinner{
+  width:32px;height:32px;border:2px solid var(--border);
+  border-top-color:var(--teal-mid);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── View pages ── */
+.view{display:none}
+.view.active{display:block}
+
+/* ── Person header ── */
+.person-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:28px;
+}
+.person-avatar{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:1.2rem;color:#fff;flex-shrink:0;
+}
+.person-avatar.franci{background:var(--franci)}
+.person-avatar.ben{background:var(--ben)}
+.person-name{font-family:var(--font-display);font-size:1.5rem}
+.person-income-tag{
+  font-size:.78rem;font-weight:500;padding:3px 10px;border-radius:100px;
+  background:var(--surface-3);color:var(--ink-3);margin-left:8px;
+}
+
+/* ── Saving rate ring ── */
+.rate-card{display:flex;align-items:center;gap:18px}
+.rate-ring{position:relative;width:72px;height:72px;flex-shrink:0}
+.rate-ring svg{transform:rotate(-90deg)}
+.rate-ring-text{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:600;
+}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  main{padding:20px 16px}
+  .two-col{grid-template-columns:1fr}
+  .cards-grid{grid-template-columns:1fr 1fr}
+  .cat-row{grid-template-columns:1fr 80px 60px}
+  .cat-budget{display:none}
+  .form-row{grid-template-columns:1fr}
+  .budget-grid{grid-template-columns:1fr}
+  .person-income-row{grid-template-columns:1fr}
+  .nav-brand{font-size:1rem}
+  .nav-tab{padding:6px 12px;font-size:.8rem}
+  thead th:nth-child(4),td:nth-child(4){display:none}
+  .month-label{font-size:1.25rem}
+}
+@media(max-width:480px){
+  .cards-grid{grid-template-columns:1fr}
+  .nav-tabs{gap:2px}
+  .nav-tab{padding:5px 10px;font-size:.78rem}
+}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .3s ease both}
+.fade-up-1{animation-delay:.05s}
+.fade-up-2{animation-delay:.1s}
+.fade-up-3{animation-delay:.15s}
+.fade-up-4{animation-delay:.2s}
+
+/* ── Error banner ── */
+.error-banner{
+  background:var(--amber-light);border:1px solid var(--amber);
+  border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;
+  font-size:.875rem;color:var(--amber);display:none;
+}
+.error-banner.show{display:block}
+.config-warning{
+  background:var(--amber-light);border:1px solid #f0c040;
+  border-radius:var(--radius-lg);padding:24px;text-align:center;
+  margin-bottom:24px;
+}
+.config-warning strong{display:block;font-size:1rem;margin-bottom:6px;color:var(--amber)}
+.config-warning p{font-size:.875rem;color:var(--ink-2)}
+.config-warning code{
+  display:inline-block;background:var(--surface-3);padding:2px 8px;
+  border-radius:4px;font-family:monospace;font-size:.85rem;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">Franci <span>&</span> Ben</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-view="household" onclick="switchView('household')">Household</button>
+      <button class="nav-tab franci-tab" data-view="franci" onclick="switchView('franci')">Franci</button>
+      <button class="nav-tab ben-tab" data-view="ben" onclick="switchView('ben')">Ben</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-icon" onclick="openSettings()" title="Settings">⚙️</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- Month bar -->
+  <div class="month-bar">
+    <div class="month-label" id="monthLabel">May 2026</div>
+    <div class="month-nav">
+      <button class="month-btn" onclick="changeMonth(-1)">‹</button>
+      <button class="month-btn" onclick="changeMonth(1)">›</button>
+      <button class="add-btn" onclick="openAddExpense()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
+        Add expense
+      </button>
+    </div>
+  </div>
+
+  <!-- Config warning -->
+  <div class="config-warning" id="configWarning" style="display:none">
+    <strong>⚠️ Google Sheets not connected</strong>
+    <p>Open this file and set your <code>SCRIPT_URL</code> at the top of the &lt;script&gt; to connect your data. See the setup guide.</p>
+  </div>
+
+  <!-- ── HOUSEHOLD VIEW ── -->
+  <div class="view active" id="view-household">
+    <div class="cards-grid fade-up">
+      <div class="card accent-teal fade-up fade-up-1">
+        <div class="card-label">Household income</div>
+        <div class="card-value" id="hh-income">R0</div>
+        <div class="card-sub" id="hh-income-sub">Franci + Ben combined</div>
+      </div>
+      <div class="card fade-up fade-up-2">
+        <div class="card-label">Total spent</div>
+        <div class="card-value" id="hh-spent">R0</div>
+        <div class="card-sub" id="hh-spent-sub">this month</div>
+      </div>
+      <div class="card fade-up fade-up-3">
+        <div class="card-label">Remaining</div>
+        <div class="card-value" id="hh-remaining">R0</div>
+        <div class="card-sub">of combined budget</div>
+      </div>
+      <div class="card fade-up fade-up-4">
+        <div class="card-label">Saving rate</div>
+        <div class="card-value" id="hh-rate">0%</div>
+        <div class="card-sub">target: 20%+</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <!-- Category breakdown -->
+      <div class="section fade-up">
+        <div class="section-header">
+          <span class="section-title">Category breakdown</span>
+          <span style="font-size:.8rem;color:var(--ink-3)" id="hh-cat-month"></span>
+        </div>
+        <div class="section-body" id="hh-categories"></div>
+      </div>
+
+      <!-- Recent expenses -->
+      <div class="section fade-up">
+        <div class="section-header">
+          <span class="section-title">Recent expenses</span>
+        </div>
+        <div class="section-body expense-table-wrap">
+          <table>
+            <thead><tr>
+              <th>Date</th><th>Description</th><th>Category</th><th>Split</th><th style="text-align:right">Total</th><th></th>
+            </tr></thead>
+            <tbody id="hh-expense-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FRANCI VIEW ── -->
+  <div class="view" id="view-franci">
+    <div class="person-header fade-up">
+      <div class="person-avatar franci">F</div>
+      <div>
+        <div class="person-name">Franci <span class="person-income-tag" id="franci-income-tag">R0/mo</span></div>
+        <div style="font-size:.85rem;color:var(--ink-3)">Your personal budget dashboard</div>
+      </div>
+    </div>
+    <div class="cards-grid fade-up">
+      <div class="card accent-franci fade-up-1">
+        <div class="card-label">Your income</div>
+        <div class="card-value franci" id="franci-income-card">R0</div>
+      </div>
+      <div class="card fade-up-2">
+        <div class="card-label">Your share of expenses</div>
+        <div class="card-value" id="franci-spent">R0</div>
+      </div>
+      <div class="card fade-up-3">
+        <div class="card-label">Remaining</div>
+        <div class="card-value" id="franci-remaining">R0</div>
+      </div>
+      <div class="card fade-up-4">
+        <div class="card-label">Saving rate</div>
+        <div class="card-value" id="franci-rate">0%</div>
+        <div class="card-sub">target: 20%+</div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="section fade-up">
+        <div class="section-header"><span class="section-title">Your category breakdown</span></div>
+        <div class="section-body" id="franci-categories"></div>
+      </div>
+      <div class="section fade-up">
+        <div class="section-header"><span class="section-title">Your expenses this month</span></div>
+        <div class="section-body expense-table-wrap">
+          <table>
+            <thead><tr>
+              <th>Date</th><th>Description</th><th>Category</th><th style="text-align:right">Your share</th><th></th>
+            </tr></thead>
+            <tbody id="franci-expense-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BEN VIEW ── -->
+  <div class="view" id="view-ben">
+    <div class="person-header fade-up">
+      <div class="person-avatar ben">B</div>
+      <div>
+        <div class="person-name">Ben <span class="person-income-tag" id="ben-income-tag">R0/mo</span></div>
+        <div style="font-size:.85rem;color:var(--ink-3)">Your personal budget dashboard</div>
+      </div>
+    </div>
+    <div class="cards-grid fade-up">
+      <div class="card accent-ben fade-up-1">
+        <div class="card-label">Your income</div>
+        <div class="card-value ben" id="ben-income-card">R0</div>
+      </div>
+      <div class="card fade-up-2">
+        <div class="card-label">Your share of expenses</div>
+        <div class="card-value" id="ben-spent">R0</div>
+      </div>
+      <div class="card fade-up-3">
+        <div class="card-label">Remaining</div>
+        <div class="card-value" id="ben-remaining">R0</div>
+      </div>
+      <div class="card fade-up-4">
+        <div class="card-label">Saving rate</div>
+        <div class="card-value" id="ben-rate">0%</div>
+        <div class="card-sub">target: 20%+</div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="section fade-up">
+        <div class="section-header"><span class="section-title">Your category breakdown</span></div>
+        <div class="section-body" id="ben-categories"></div>
+      </div>
+      <div class="section fade-up">
+        <div class="section-header"><span class="section-title">Your expenses this month</span></div>
+        <div class="section-body expense-table-wrap">
+          <table>
+            <thead><tr>
+              <th>Date</th><th>Description</th><th>Category</th><th style="text-align:right">Your share</th><th></th>
+            </tr></thead>
+            <tbody id="ben-expense-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main><!-- /main -->
+</div><!-- /app -->
+
+<!-- ── ADD EXPENSE MODAL ── -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add expense</div>
+      <button class="modal-close" onclick="closeAddExpense()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="exp-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total amount (R)</label>
+          <input type="number" class="form-input" id="exp-amount" placeholder="0.00" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <input type="text" class="form-input" id="exp-desc" placeholder="e.g. Woolworths groceries">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="exp-cat">
+          <option value="">Select category…</option>
+          <option value="Rent">🏠 Rent</option>
+          <option value="Groceries & food">🛒 Groceries & food</option>
+          <option value="Transport">🚗 Transport</option>
+          <option value="Phone & utilities">📱 Phone & utilities</option>
+          <option value="Retirement (RA)">🏦 Retirement (RA)</option>
+          <option value="TFSA / investments">📈 TFSA / investments</option>
+          <option value="Emergency fund">🛡️ Emergency fund</option>
+          <option value="Going out & lifestyle">🎉 Going out & lifestyle</option>
+        </select>
+      </div>
+
+      <!-- Split slider -->
+      <div class="split-container">
+        <div class="split-labels">
+          <span class="split-label-item franci-color">Franci</span>
+          <span class="split-label-item ben-color">Ben</span>
+        </div>
+        <div class="split-track" id="splitTrack">
+          <div class="split-fill" id="splitFill" style="width:50%"></div>
+          <div class="split-handle" id="splitHandle" style="left:50%"></div>
+        </div>
+        <div class="split-values">
+          <span class="split-val franci-val" id="splitFranciPct">50%</span>
+          <span class="split-val ben-val" id="splitBenPct">50%</span>
+        </div>
+        <button class="split-reset" onclick="resetSplit()">Reset to 50/50</button>
+      </div>
+
+      <div style="display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--border);margin-top:4px">
+        <div style="flex:1;text-align:center">
+          <div style="font-size:.75rem;color:var(--franci);font-weight:600;margin-bottom:2px">Franci pays</div>
+          <div style="font-size:1.1rem;font-weight:600;color:var(--franci)" id="splitFranciAmt">R0</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="flex:1;text-align:center">
+          <div style="font-size:.75rem;color:var(--ben);font-weight:600;margin-bottom:2px">Ben pays</div>
+          <div style="font-size:1.1rem;font-weight:600;color:var(--ben)" id="splitBenAmt">R0</div>
+        </div>
+      </div>
+
+      <div class="error-banner" id="addError">Please fill in all fields.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeAddExpense()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitExpense()" id="submitBtn">Save expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SETTINGS PANEL ── -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOutside(event)">
+  <div class="settings-panel">
+    <div class="settings-title">Settings</div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Monthly incomes</div>
+      <div class="person-income-row">
+        <div>
+          <label class="form-label" style="color:var(--franci)">Franci's take-home (R)</label>
+          <input type="number" class="form-input" id="set-franci-income" placeholder="28000">
+        </div>
+        <div>
+          <label class="form-label" style="color:var(--ben)">Ben's take-home (R)</label>
+          <input type="number" class="form-input" id="set-ben-income" placeholder="20000">
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Franci's monthly budget targets (R)</div>
+      <div class="budget-grid" id="franci-budget-inputs"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Ben's monthly budget targets (R)</div>
+      <div class="budget-grid" id="ben-budget-inputs"></div>
+    </div>
+
+    <button class="settings-save" onclick="saveSettings()">Save settings</button>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// CONFIGURATION — paste your deployed Apps Script URL here
+// ══════════════════════════════════════════════════════════════════
+const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+// ══════════════════════════════════════════════════════════════════
+
+const CATEGORIES = [
+  {name:'Rent', icon:'🏠'},
+  {name:'Groceries & food', icon:'🛒'},
+  {name:'Transport', icon:'🚗'},
+  {name:'Phone & utilities', icon:'📱'},
+  {name:'Retirement (RA)', icon:'🏦'},
+  {name:'TFSA / investments', icon:'📈'},
+  {name:'Emergency fund', icon:'🛡️'},
+  {name:'Going out & lifestyle', icon:'🎉'},
+];
+
+// ── State ──────────────────────────────────────────────────────────
+let currentView = 'household';
+let currentMonth = new Date();
+currentMonth.setDate(1);
+let expenses = [];
+let splitPct = 50; // Franci's %
+let isDragging = false;
+
+let settings = {
+  franciIncome: 28000,
+  benIncome: 20000,
+  franciBudgets: {
+    'Rent': 6800, 'Groceries & food': 4500, 'Transport': 2000,
+    'Phone & utilities': 200, 'Retirement (RA)': 500,
+    'TFSA / investments': 2000, 'Emergency fund': 1000,
+    'Going out & lifestyle': 2000
+  },
+  benBudgets: {
+    'Rent': 5000, 'Groceries & food': 3000, 'Transport': 1500,
+    'Phone & utilities': 200, 'Retirement (RA)': 500,
+    'TFSA / investments': 1500, 'Emergency fund': 800,
+    'Going out & lifestyle': 1500
+  }
+};
+
+// ── Init ───────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  loadSettings();
+  checkConfig();
+  initSplitSlider();
+  setDefaultDate();
+  renderAll();
+  fetchExpenses();
+  buildSettingsInputs();
+});
+
+function checkConfig() {
+  const warn = document.getElementById('configWarning');
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    warn.style.display = 'block';
+  }
+}
+
+// ── Month navigation ───────────────────────────────────────────────
+function changeMonth(dir) {
+  currentMonth.setMonth(currentMonth.getMonth() + dir);
+  renderAll();
+  fetchExpenses();
+}
+
+function monthKey() {
+  return `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}`;
+}
+
+function formatMonthLabel() {
+  return currentMonth.toLocaleDateString('en-ZA', {month:'long', year:'numeric'});
+}
+
+// ── View switching ─────────────────────────────────────────────────
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === view);
+  });
+  renderAll();
+}
+
+// ── Fetch from Google Sheets ───────────────────────────────────────
+function fetchExpenses() {
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    renderAll();
+    return;
+  }
+  const url = `${SCRIPT_URL}?action=get&month=${monthKey()}`;
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        expenses = data.expenses || [];
+        renderAll();
+      }
+    })
+    .catch(() => showToast('Could not load data — check your connection'));
+}
+
+// ── Add expense ────────────────────────────────────────────────────
+function openAddExpense() {
+  setDefaultDate();
+  updateSplitDisplay();
+  document.getElementById('addModal').classList.add('open');
+  document.getElementById('exp-amount').focus();
+}
+function closeAddExpense() {
+  document.getElementById('addModal').classList.remove('open');
+  document.getElementById('addError').classList.remove('show');
+  clearForm();
+}
+
+function clearForm() {
+  document.getElementById('exp-amount').value = '';
+  document.getElementById('exp-desc').value = '';
+  document.getElementById('exp-cat').value = '';
+  splitPct = 50;
+  updateSplitDisplay();
+}
+
+function setDefaultDate() {
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth()+1).padStart(2,'0');
+  const d = String(today.getDate()).padStart(2,'0');
+  document.getElementById('exp-date').value = `${y}-${m}-${d}`;
+}
+
+function submitExpense() {
+  const date = document.getElementById('exp-date').value;
+  const amount = parseFloat(document.getElementById('exp-amount').value);
+  const desc = document.getElementById('exp-desc').value.trim();
+  const cat = document.getElementById('exp-cat').value;
+
+  if (!date || !amount || !desc || !cat) {
+    document.getElementById('addError').classList.add('show');
+    return;
+  }
+  document.getElementById('addError').classList.remove('show');
+
+  const expense = {
+    id: Date.now().toString(),
+    date, amount, description: desc, category: cat,
+    franciPct: splitPct, benPct: 100 - splitPct,
+    franciAmt: +(amount * splitPct / 100).toFixed(2),
+    benAmt: +(amount * (100 - splitPct) / 100).toFixed(2),
+    month: date.substring(0,7)
+  };
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    expenses.push(expense);
+    renderAll();
+    closeAddExpense();
+    showToast('Expense added (demo mode — not saved to Sheets)');
+    btn.disabled = false;
+    btn.textContent = 'Save expense';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({action:'add', expense})
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      expenses.push(expense);
+      renderAll();
+      closeAddExpense();
+      showToast('Expense saved ✓');
+    } else {
+      showToast('Error saving — try again');
+    }
+  })
+  .catch(() => showToast('Network error — check connection'))
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = 'Save expense';
+  });
+}
+
+function deleteExpense(id) {
+  if (!confirm('Delete this expense?')) return;
+  expenses = expenses.filter(e => e.id !== id);
+
+  if (SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+    fetch(SCRIPT_URL, {
+      method:'POST',
+      body: JSON.stringify({action:'delete', id})
+    }).catch(() => {});
+  }
+  renderAll();
+  showToast('Expense deleted');
+}
+
+// ── Filter expenses for current month ─────────────────────────────
+function monthExpenses() {
+  const mk = monthKey();
+  return expenses.filter(e => (e.month || e.date?.substring(0,7)) === mk);
+}
+
+// ── Render ─────────────────────────────────────────────────────────
+function renderAll() {
+  document.getElementById('monthLabel').textContent = formatMonthLabel();
+  document.getElementById('hh-cat-month').textContent = formatMonthLabel();
+
+  const me = monthExpenses();
+  renderHousehold(me);
+  renderFranci(me);
+  renderBen(me);
+}
+
+function fmt(n) {
+  return 'R' + Math.round(n).toLocaleString('en-ZA');
+}
+
+function renderHousehold(me) {
+  const totalIncome = settings.franciIncome + settings.benIncome;
+  const totalSpent = me.reduce((s,e) => s + e.amount, 0);
+  const totalBudget = sumBudgets('franci') + sumBudgets('ben');
+  const remaining = totalBudget - totalSpent;
+  const rate = totalIncome > 0 ? ((totalIncome - totalSpent) / totalIncome * 100) : 0;
+
+  set('hh-income', fmt(totalIncome));
+  set('hh-spent', fmt(totalSpent));
+  setColored('hh-remaining', fmt(Math.abs(remaining)), remaining >= 0 ? 'positive' : 'negative');
+  set('hh-rate', Math.round(rate) + '%');
+
+  // Categories
+  const catEl = document.getElementById('hh-categories');
+  catEl.innerHTML = '';
+  CATEGORIES.forEach(({name, icon}) => {
+    const budget = (settings.franciBudgets[name] || 0) + (settings.benBudgets[name] || 0);
+    const spent = me.filter(e => e.category === name).reduce((s,e) => s + e.amount, 0);
+    catEl.appendChild(makeCatRow(name, icon, budget, spent));
+  });
+
+  // Expenses
+  renderExpenseTable('hh-expense-list', me, 'household');
+}
+
+function renderFranci(me) {
+  const income = settings.franciIncome;
+  const spent = me.reduce((s,e) => s + (e.franciAmt || 0), 0);
+  const budget = sumBudgets('franci');
+  const remaining = income - spent;
+  const rate = income > 0 ? ((income - spent) / income * 100) : 0;
+
+  set('franci-income-card', fmt(income));
+  set('franci-income-tag', fmt(income) + '/mo');
+  set('franci-spent', fmt(spent));
+  setColored('franci-remaining', fmt(Math.abs(remaining)), remaining >= 0 ? 'positive' : 'negative');
+  set('franci-rate', Math.round(rate) + '%');
+
+  const catEl = document.getElementById('franci-categories');
+  catEl.innerHTML = '';
+  CATEGORIES.forEach(({name, icon}) => {
+    const budget = settings.franciBudgets[name] || 0;
+    const catSpent = me.filter(e => e.category === name).reduce((s,e) => s + (e.franciAmt || 0), 0);
+    catEl.appendChild(makeCatRow(name, icon, budget, catSpent));
+  });
+
+  renderExpenseTable('franci-expense-list', me, 'franci');
+}
+
+function renderBen(me) {
+  const income = settings.benIncome;
+  const spent = me.reduce((s,e) => s + (e.benAmt || 0), 0);
+  const budget = sumBudgets('ben');
+  const remaining = income - spent;
+  const rate = income > 0 ? ((income - spent) / income * 100) : 0;
+
+  set('ben-income-card', fmt(income));
+  set('ben-income-tag', fmt(income) + '/mo');
+  set('ben-spent', fmt(spent));
+  setColored('ben-remaining', fmt(Math.abs(remaining)), remaining >= 0 ? 'positive' : 'negative');
+  set('ben-rate', Math.round(rate) + '%');
+
+  const catEl = document.getElementById('ben-categories');
+  catEl.innerHTML = '';
+  CATEGORIES.forEach(({name, icon}) => {
+    const budget = settings.benBudgets[name] || 0;
+    const catSpent = me.filter(e => e.category === name).reduce((s,e) => s + (e.benAmt || 0), 0);
+    catEl.appendChild(makeCatRow(name, icon, budget, catSpent));
+  });
+
+  renderExpenseTable('ben-expense-list', me, 'ben');
+}
+
+function makeCatRow(name, icon, budget, spent) {
+  const pct = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
+  const cls = pct >= 100 ? 'over' : pct >= 80 ? 'warn' : 'ok';
+  const row = document.createElement('div');
+  row.className = 'cat-row';
+  row.innerHTML = `
+    <div>
+      <div class="cat-name"><span class="cat-icon">${icon}</span>${name}</div>
+      <div class="progress-bar"><div class="progress-fill ${cls}" style="width:${pct}%"></div></div>
+    </div>
+    <div class="cat-amount">${fmt(spent)}</div>
+    <div class="cat-budget">${fmt(budget)}</div>
+    <div class="cat-pct">${Math.round(pct)}%</div>
+  `;
+  return row;
+}
+
+function renderExpenseTable(elId, expenses, mode) {
+  const tbody = document.getElementById(elId);
+  const sorted = [...expenses].sort((a,b) => b.date.localeCompare(a.date));
+  if (sorted.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <p>No expenses this month yet.<br>Hit <strong>Add expense</strong> to get started.</p>
+      </div>
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = sorted.map(e => {
+    const d = new Date(e.date + 'T00:00:00');
+    const dateStr = d.toLocaleDateString('en-ZA', {day:'numeric', month:'short'});
+    const amtDisplay = mode === 'franci' ? fmt(e.franciAmt || 0)
+                     : mode === 'ben'    ? fmt(e.benAmt || 0)
+                     : fmt(e.amount);
+    const splitCol = mode === 'household'
+      ? `<td><div class="split-pill">
+          <span class="split-dot franci"></span>${e.franciPct}%
+          <span class="split-dot ben"></span>${e.benPct}%
+         </div></td>`
+      : '';
+    return `<tr>
+      <td class="date-cell">${dateStr}</td>
+      <td>${e.description}</td>
+      <td class="cat-cell"><span class="cat-badge">${e.category}</span></td>
+      ${splitCol}
+      <td class="amount">${amtDisplay}</td>
+      <td><button class="del-btn" onclick="deleteExpense('${e.id}')" title="Delete">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function sumBudgets(person) {
+  const budgets = person === 'franci' ? settings.franciBudgets : settings.benBudgets;
+  return Object.values(budgets).reduce((s,v) => s + (v||0), 0);
+}
+
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function setColored(id, val, cls) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  el.className = 'card-value ' + cls;
+}
+
+// ── Split slider ───────────────────────────────────────────────────
+function initSplitSlider() {
+  const track = document.getElementById('splitTrack');
+  const handle = document.getElementById('splitHandle');
+
+  function getPos(clientX) {
+    const rect = track.getBoundingClientRect();
+    let pct = ((clientX - rect.left) / rect.width) * 100;
+    return Math.round(Math.max(0, Math.min(100, pct)));
+  }
+
+  handle.addEventListener('mousedown', e => { isDragging = true; e.preventDefault(); });
+  handle.addEventListener('touchstart', e => { isDragging = true; }, {passive:true});
+
+  document.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    splitPct = getPos(e.clientX);
+    updateSplitDisplay();
+  });
+  document.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    splitPct = getPos(e.touches[0].clientX);
+    updateSplitDisplay();
+  }, {passive:true});
+  document.addEventListener('mouseup', () => isDragging = false);
+  document.addEventListener('touchend', () => isDragging = false);
+
+  track.addEventListener('click', e => {
+    if (isDragging) return;
+    splitPct = getPos(e.clientX);
+    updateSplitDisplay();
+  });
+}
+
+function updateSplitDisplay() {
+  const benPct = 100 - splitPct;
+  const amount = parseFloat(document.getElementById('exp-amount')?.value) || 0;
+
+  document.getElementById('splitFill').style.width = splitPct + '%';
+  document.getElementById('splitHandle').style.left = splitPct + '%';
+  document.getElementById('splitFranciPct').textContent = splitPct + '%';
+  document.getElementById('splitBenPct').textContent = benPct + '%';
+  document.getElementById('splitFranciAmt').textContent = fmt(amount * splitPct / 100);
+  document.getElementById('splitBenAmt').textContent = fmt(amount * benPct / 100);
+}
+
+document.getElementById('exp-amount')?.addEventListener('input', updateSplitDisplay);
+
+function resetSplit() {
+  splitPct = 50;
+  updateSplitDisplay();
+}
+
+// ── Settings ───────────────────────────────────────────────────────
+function buildSettingsInputs() {
+  ['franci', 'ben'].forEach(person => {
+    const container = document.getElementById(`${person}-budget-inputs`);
+    container.innerHTML = '';
+    const budgets = person === 'franci' ? settings.franciBudgets : settings.benBudgets;
+    CATEGORIES.forEach(({name, icon}) => {
+      const div = document.createElement('div');
+      div.className = 'budget-item';
+      div.innerHTML = `
+        <span class="budget-item-icon">${icon}</span>
+        <span class="budget-item-label">${name}</span>
+        <input type="number" class="budget-item-input"
+          id="budget-${person}-${name.replace(/[^a-z]/gi,'')}"
+          value="${budgets[name] || 0}" min="0">
+      `;
+      container.appendChild(div);
+    });
+  });
+
+  document.getElementById('set-franci-income').value = settings.franciIncome;
+  document.getElementById('set-ben-income').value = settings.benIncome;
+}
+
+function openSettings() {
+  buildSettingsInputs();
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function closeSettingsOutside(e) {
+  if (e.target === document.getElementById('settingsOverlay')) {
+    document.getElementById('settingsOverlay').classList.remove('open');
+  }
+}
+
+function saveSettings() {
+  settings.franciIncome = parseFloat(document.getElementById('set-franci-income').value) || 0;
+  settings.benIncome = parseFloat(document.getElementById('set-ben-income').value) || 0;
+
+  CATEGORIES.forEach(({name}) => {
+    const fKey = 'budget-franci-' + name.replace(/[^a-z]/gi,'');
+    const bKey = 'budget-ben-' + name.replace(/[^a-z]/gi,'');
+    settings.franciBudgets[name] = parseFloat(document.getElementById(fKey)?.value) || 0;
+    settings.benBudgets[name] = parseFloat(document.getElementById(bKey)?.value) || 0;
+  });
+
+  localStorage.setItem('fb-budget-settings', JSON.stringify(settings));
+  document.getElementById('settingsOverlay').classList.remove('open');
+  renderAll();
+  showToast('Settings saved ✓');
+}
+
+function loadSettings() {
+  const saved = localStorage.getItem('fb-budget-settings');
+  if (saved) {
+    try { settings = {...settings, ...JSON.parse(saved)}; } catch(e) {}
+  }
+}
+
+// ── Toast ──────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Keyboard ───────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeAddExpense();
+    document.getElementById('settingsOverlay').classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
